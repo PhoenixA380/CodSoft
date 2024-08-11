@@ -1,5 +1,5 @@
 package Weather;
-import org.json.JSONArray;
+
 import org.json.JSONObject;
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class WeatherApp extends JFrame {
 
-    private final String API_KEY = "f9c55b06c9d745a5e6e35bd11ce4cd7a";
+    private final String API_KEY = "1231aae004d9f5e2b8a096eeebc4803a";
     private final String API_URL = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric";
 
     private JTextField cityField;
@@ -22,30 +22,67 @@ public class WeatherApp extends JFrame {
 
     public WeatherApp() {
         setTitle("Weather Application");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
+        // Background Color
+        getContentPane().setBackground(new Color(240, 240, 240));
+
+        // Input Panel
         JPanel inputPanel = new JPanel(new FlowLayout());
+        inputPanel.setBackground(new Color(100, 149, 237)); // Cornflower Blue
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         cityLabel = new JLabel("Enter city:");
-        cityField = new JTextField(15);
+        cityLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        cityLabel.setForeground(Color.WHITE);
+
+        cityField = new JTextField(20);
         searchButton = new JButton("Search");
 
         inputPanel.add(cityLabel);
         inputPanel.add(cityField);
         inputPanel.add(searchButton);
 
-        JPanel outputPanel = new JPanel(new GridLayout(4, 1));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        add(inputPanel, gbc);
+
+        // Output Panel
+        JPanel outputPanel = new JPanel(new GridBagLayout());
+        outputPanel.setBackground(new Color(255, 255, 255)); // White
+        outputPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+
+        GridBagConstraints outputGbc = new GridBagConstraints();
+        outputGbc.gridx = 0;
+        outputGbc.gridy = 0;
+        outputGbc.insets = new Insets(5, 10, 5, 10);
+
         tempLabel = new JLabel("Temperature: ");
+        tempLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        tempLabel.setForeground(new Color(0, 102, 204)); // Dark Blue
+
         humidityLabel = new JLabel("Humidity: ");
+        humidityLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        humidityLabel.setForeground(new Color(0, 102, 204)); // Dark Blue
+
         windLabel = new JLabel("Wind Speed: ");
+        windLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        windLabel.setForeground(new Color(0, 102, 204)); // Dark Blue
 
-        outputPanel.add(tempLabel);
-        outputPanel.add(humidityLabel);
-        outputPanel.add(windLabel);
+        outputPanel.add(tempLabel, outputGbc);
+        outputGbc.gridy++;
+        outputPanel.add(humidityLabel, outputGbc);
+        outputGbc.gridy++;
+        outputPanel.add(windLabel, outputGbc);
 
-        add(inputPanel, BorderLayout.NORTH);
-        add(outputPanel, BorderLayout.CENTER);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(outputPanel, gbc);
 
         searchButton.addActionListener(new ActionListener() {
             @Override
@@ -89,7 +126,7 @@ public class WeatherApp extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void parseWeatherData(String jsonResponse) {
         JSONObject jsonObject = new JSONObject(jsonResponse);
         JSONObject main = jsonObject.getJSONObject("main");
@@ -107,6 +144,7 @@ public class WeatherApp extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             WeatherApp app = new WeatherApp();
+            app.setLocationRelativeTo(null); // Center the window
             app.setVisible(true);
         });
     }
